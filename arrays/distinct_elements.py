@@ -23,6 +23,7 @@ def solution(A: list[int]) -> int:
     A.sort()
     return len(set(A))
 
+
 if __name__ == "__main__":
     print(solution([2, 1, 1, 2, 3, 1]))  # 3
     print(solution([]))  # 0
