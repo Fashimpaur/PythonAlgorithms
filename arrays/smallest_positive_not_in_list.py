@@ -3,12 +3,15 @@ Write a function that, given a list A of N integers,
 returns the smallest positive integer (greater than 0)
 that does not occur in A
 """
-def solution_1(A: list[int]) -> int:
+
+
+def solution_1(A: list[int]) -> int | None:
     positives = {x for x in A if x > 0}
 
     for i in range(1, len(A) + 2):
         if i not in positives:
             return i
+    return None
 
 
 def solution(A: list[int]) -> int:
