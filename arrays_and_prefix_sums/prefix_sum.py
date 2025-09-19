@@ -39,7 +39,11 @@ def solution(S: str, P: list[int], Q: list[int]) -> list[int]:
 
 
 if __name__ == '__main__':
-    S = "CAGCCTA"
-    P = [2, 5, 0]
-    Q = [4, 5, 6]
-    print(solution(S, P, Q))  # [2, 4, 1]
+    print(solution("CAGCCTGA", [2, 5, 0], [4, 5, 6]))  # [2, 4, 1]
+    print(solution("A", [0], [0]))  # [1]
+    print(solution("TTTTT", [0, 1, 2], [4, 3, 2]))  # [4, 4, 4]
+    print(solution("AGCT", [0], [3]))  # [1]
+    print(solution("CAGT", [0, 1, 2], [1, 3, 3]))  # [1, 1, 3]
+    print(solution("ACGTAC", [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5]))  # [1, 2, 3, 4, 1, 2]
+    print(solution("TTTTTTTTT", [0, 0, 0], [8, 5, 2]))  # [4, 4, 4]
+    print(solution("ACGT", [3], [3]))  # [4]
