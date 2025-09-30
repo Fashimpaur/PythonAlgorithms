@@ -51,10 +51,16 @@ def solution(A: list[int], T: int) -> list[int]:
         if other_number in checked:
             return [checked[other_number], i]
         checked[number] = i
-    return []
+    return [-1, -1]
 
 
 if __name__ == "__main__":
-    print(solution([2, 7, 11, 15], 6))  # []
+    print(solution([2, 7, 11, 15], 6))  # [-1, -1]
     print(solution([2, 7, 11, 15], 9))  # [0, 1]
     print(solution([3, 2, 4, 1], 6))  # [1, 2]
+    import timeit
+    time_taken = timeit.timeit(
+            lambda: print(solution([i for i in range(-1000000, 1000001)], 1999999)),
+            number=1
+    )
+    print(time_taken)
