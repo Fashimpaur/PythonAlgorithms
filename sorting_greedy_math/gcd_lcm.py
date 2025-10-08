@@ -24,3 +24,35 @@ Assumptions:
 - The function should return the correct answer efficiently, even for large values of A and B.
 """
 
+
+import math
+
+
+def gcd(a, b) -> int:
+    while b:
+        a, b = b, a % b
+    return a
+
+
+def solution(A: int, B: int) -> tuple[int, int]:
+    G = gcd(A, B)
+    L = (A * B) // G
+
+    return G, L
+
+
+def lib_solution(A: int, B: int) -> tuple[int, int]:
+    return math.gcd(A, B), math.lcm(A, B)
+
+
+if __name__ == '__main__':
+    print("Pure code solution:\n")
+    print(solution(15, 20))
+    print(solution(7, 5))
+    print(solution(21, 6))
+    print(solution(13, 13))
+    print("\nPython library solution:\n")
+    print(lib_solution(15, 20))
+    print(lib_solution(7, 5))
+    print(lib_solution(21, 6))
+    print(lib_solution(13, 13))
