@@ -95,4 +95,3 @@ if __name__ == "__main__":
     ]
     for param in param_list:
         print(solution(param))
-        print()
