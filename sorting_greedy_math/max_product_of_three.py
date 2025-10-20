@@ -1,4 +1,4 @@
-#!python
+#!/usr/bin/python3
 """
 A non-empty array A consisting of N integers is given.
 
@@ -81,7 +81,7 @@ def solution(A: list[int]) -> int:
     return max(max1 * max2 * max3, max1 * min1 * min2)
 
 
-if __name__ == "__main__":
+def main():
     param_list = [
         [1, 2, 3],
         [-3, 1, 2, -2, 5, 6],
@@ -96,3 +96,7 @@ if __name__ == "__main__":
     ]
     for param in param_list:
         print(solution(param))
+
+
+if __name__ == "__main__":
+    main()
