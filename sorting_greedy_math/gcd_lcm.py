@@ -24,7 +24,6 @@ Assumptions:
 - The function should return the correct answer efficiently, even for large values of A and B.
 """
 
-
 import math
 
 
@@ -45,7 +44,7 @@ def lib_solution(A: int, B: int) -> tuple[int, int]:
     return math.gcd(A, B), math.lcm(A, B)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Pure code solution:\n")
     print(solution(15, 20))
     print(solution(7, 5))

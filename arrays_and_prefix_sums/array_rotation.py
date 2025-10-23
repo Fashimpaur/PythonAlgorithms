@@ -5,10 +5,10 @@ returns the array A rotated K times
 
 
 def solution(A: list[int], K: int):
-    if not A:
+    n = len(A) if A is not None else 0
+    if not A or n > 100:
         return A
 
-    n = len(A)
     K_normalized = K % n
     if K_normalized == 0:
         return A
@@ -16,7 +16,7 @@ def solution(A: list[int], K: int):
     return A[-K_normalized:] + A[:-K_normalized]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(solution([3, 8, 9, 7, 6], 3))  # [9, 7, 6, 3, 8]
     print(solution([3, 8, 9, 7, 6], -3))  # [9, 7, 6, 3, 8]
     print(solution([1, 2, 3, 4], 4))  # [1, 2, 3, 4]

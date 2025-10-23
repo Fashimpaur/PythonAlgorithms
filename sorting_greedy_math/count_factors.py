@@ -37,4 +37,6 @@ if __name__ == "__main__":
     test_values = [1, 2, 4, 9, 24, 36, 100, 2147483647]
     for i in test_values:
         result = solution(i)
-        print(f'There are {result[0]} factors in {i} and they are:\n{result[1]}\n')
+        print(
+            f"There are {result[0]} factors in {i} and they are:\n{result[1]}\n"
+        )

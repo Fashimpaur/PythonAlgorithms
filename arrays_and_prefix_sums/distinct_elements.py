@@ -27,6 +27,5 @@ def solution(A: list[int]) -> int:
 if __name__ == "__main__":
     print(solution([2, 1, 1, 2, 3, 1]))  # 3
     print(solution([]))  # 0
-    print(solution([0,0,0,0]))  # 1
+    print(solution([0, 0, 0, 0]))  # 1
     print(solution([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]))  # 11
-
