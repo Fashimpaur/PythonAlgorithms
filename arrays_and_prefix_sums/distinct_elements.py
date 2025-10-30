@@ -19,8 +19,7 @@ each element of array A is an integer within the range [−1,000,000..1,000,000]
 
 def solution(A: list[int]) -> int:
     if not A:
-        return o
-    A.sort()
+        return 0
     return len(set(A))
 
 
