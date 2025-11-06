@@ -76,3 +76,125 @@ For each new timestamp t:
     2. If the queue size < limit, allow and append.
     3. Otherwise, reject.
 """
+
+"""
+Rate Limiter Algorithm Demo
+---------------------------
+
+This program demonstrates a basic sliding-window rate limiter.
+
+Given:
+  - `limit`: the maximum number of allowed actions within a time window
+  - `window`: the window size (in seconds)
+  - `timestamps`: a list of timestamps (ascending order) when actions occurred
+
+For each timestamp, the program returns True if the action is allowed,
+or False if it exceeds the rate limit.
+
+Constraints:
+  1 <= limit <= 10^4
+  1 <= window <= 10^5
+  1 <= len(timestamps) <= 10^5
+  1 <= timestamps[i] <= 10^9
+  timestamps must be non-decreasing
+"""
+
+from collections import deque
+
+
+def solution(limit: int, window: int, timestamps: list[int]) -> list[bool]:
+    """Return a list indicating whether each request is allowed by the rate limiter."""
+
+    # Validate arguments
+    if limit < 1 or limit > 10**4:
+        raise ValueError("The limit is not in range (1 ≤ limit ≤ 10^4)")
+    if window < 1 or window > 10**5:
+        raise ValueError("The window is not in range (1 ≤ window ≤ 10^5)")
+    if len(timestamps) > 10**5:
+        raise ValueError("The number of timestamps exceeds 10^5")
+
+    q = deque()  # stores timestamps within the active window
+    allowed = []  # stores True/False results
+
+    arg_params = f"limit={limit}, window={window}, timestamps={timestamps}"
+
+    for index, timestamp in enumerate(timestamps):
+        # Check timestamp validity
+        if timestamp < 1 or timestamp > 10**9:
+            raise ValueError(
+                f"The timestamp {timestamp} is out of valid range. {arg_params}"
+            )
+
+        # Ensure timestamps are non-decreasing
+        if index > 0 and timestamp < timestamps[index - 1]:
+            raise ValueError(
+                f"The timestamps are not in ascending order. {arg_params}"
+            )
+
+        # Remove timestamps that have fallen out of the window
+        while q and q[0] < timestamp - window + 1:
+            q.popleft()
+
+        # Allow or deny this request
+        if len(q) < limit:
+            q.append(timestamp)
+            allowed.append(True)
+        else:
+            allowed.append(False)
+
+    return allowed
+
+
+# ---------------------------------------------------------------------
+# TEST HARNESS
+# ---------------------------------------------------------------------
+def run_tests(verbose: bool = True) -> None:
+    """Run sample test cases for the rate limiter."""
+
+    cases = [
+        (3, 10, [1, 2, 3, 11, 12, 13, 14]),
+        (4, 9, [2, 3, 4, 5, 6, 15, 16, 17, 19, 20]),
+        (2, 2, [1, 1, 1, 1, 1, 1, 1, 1, 1]),
+        (3, 10, [14, 13, 12, 11, 3, 2, 1]),  # invalid: not ascending
+        (3, 10, [5]),
+        (2, 10, [1, 2, 3]),
+        (3, 10, [0, 10]),  # invalid: timestamp out of range
+        (3, 10, None),
+    ]
+
+    expected_outputs = [
+        [True, True, True, True, True, True, False],
+        [True, True, True, True, False, True, True, True, True, False],
+        [True, True, False, False, False, False, False, False, False],
+        None,
+        [True],
+        [True, True, False],
+        None,
+        None,
+    ]
+
+    for idx, case in enumerate(cases):
+        try:
+            result = solution(*case)
+            expected = expected_outputs[idx]
+
+            if result != expected:
+                raise AssertionError(
+                    f"\n❌ Case {case}\nGot:      {result}\nExpected: {expected}\n"
+                )
+            if verbose:
+                print(f"✅ Case {case} passed. Output: {result}")
+
+        except ValueError as e:
+            if expected_outputs[idx] is None:
+                if verbose:
+                    print(f"⚠️  Case {case} raised expected ValueError: {e}")
+            else:
+                raise
+
+
+# ---------------------------------------------------------------------
+# MAIN
+# ---------------------------------------------------------------------
+if __name__ == "__main__":
+    run_tests(verbose=True)
