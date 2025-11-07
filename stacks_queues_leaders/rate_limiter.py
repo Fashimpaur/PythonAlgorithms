@@ -159,7 +159,7 @@ def run_tests(verbose: bool = True) -> None:
         (3, 10, [5]),
         (2, 10, [1, 2, 3]),
         (3, 10, [0, 10]),  # invalid: timestamp out of range
-        (3, 10, None),
+        (3, 10, None),  # <-- Test 8: triggers an unexpected TypeError to check other exceptions are raised
     ]
 
     expected_outputs = [
@@ -180,7 +180,7 @@ def run_tests(verbose: bool = True) -> None:
 
             if result != expected:
                 raise AssertionError(
-                    f"\n❌ Case {case}\nGot:      {result}\nExpected: {expected}\n"
+                    f"\n❌ Case {case}\nGot:    {result}\nExpected: {expected}\n"
                 )
             if verbose:
                 print(f"✅ Case {case} passed. Output: {result}")
@@ -191,6 +191,10 @@ def run_tests(verbose: bool = True) -> None:
                     print(f"⚠️  Case {case} raised expected ValueError: {e}")
             else:
                 raise
+
+        except Exception as e:
+            print(f"❌ Case {case}. Unexpected exception occurred: {type(e).__name__} - {e}")
+            raise
 
 
 # ---------------------------------------------------------------------
