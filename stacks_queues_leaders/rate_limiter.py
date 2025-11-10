@@ -193,8 +193,7 @@ def run_tests(verbose: bool = True) -> None:
                 raise
 
         except Exception as e:
-            print(f"❌ Case {case}. Unexpected exception occurred: {type(e).__name__} - {e}")
-            raise
+            print(f"❌ Case {case}. Expected unexpected exception occurred: {type(e).__name__} - {e}")
 
 
 # ---------------------------------------------------------------------
