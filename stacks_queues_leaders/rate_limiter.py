@@ -120,7 +120,7 @@ def solution(limit: int, window: int, timestamps: list[int]) -> list[bool]:
 
     for index, timestamp in enumerate(timestamps):
         # Check timestamp validity
-        if timestamp < 1 or timestamp > 10**9:
+        if timestamp < 0 or timestamp > 10**9:
             raise ValueError(
                 f"The timestamp {timestamp} is out of valid range. {arg_params}"
             )
@@ -192,8 +192,11 @@ def run_tests(verbose: bool = True) -> None:
             else:
                 raise
 
-        except Exception as e:
+        except TypeError as e:
             print(f"❌ Case {case}. Expected unexpected exception occurred: {type(e).__name__} - {e}")
+
+        except Exception as e:
+            raise
 
 
 # ---------------------------------------------------------------------
