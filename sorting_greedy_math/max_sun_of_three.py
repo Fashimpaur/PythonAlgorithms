@@ -51,7 +51,7 @@ def solution(A: list[int]) -> Optional[int]:
         return None
 
     # O(1) initialization
-    current_sum = A[0] + A[1] + A[2]
+    current_sum = sum(A[:3])
     max_sum = current_sum
 
     # O(N) loop
