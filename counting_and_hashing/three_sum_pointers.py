@@ -1,3 +1,11 @@
+# Overall Complexity for get_triplets():
+# Time: O(n^2) — sorting takes O(n log n), followed by an O(n^2)
+#       outer-loop and two-pointer scan in the worst case.
+# Space: O(n) auxiliary space for the sorted copy, excluding output.
+#        O(n^2) total space in the worst case, including returned triplets.
+#        Early-exit optimizations improve practical runtime but do not
+#        change the worst-case time complexity.
+# n = number of integers in the input list.
 
 from collections import Counter
 
