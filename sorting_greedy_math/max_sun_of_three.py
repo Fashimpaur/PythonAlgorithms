@@ -11,7 +11,7 @@ Write a function:
 that, given a non-empty array A, returns the value of the maximal sum
 of 3 consecutive integers.
 
-For example, given array A such that:
+For example, given an array A such that:
 
     A[0] = -3
     A[1] = 1
