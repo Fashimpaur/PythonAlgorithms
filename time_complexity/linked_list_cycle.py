@@ -71,6 +71,8 @@ class ListNode:
 # ---------------------------------------------------------------------------
 # Brute force attempt
 # ---------------------------------------------------------------------------
+
+
 def has_cycle_brute_force(head: Optional[ListNode]) -> bool:
     visited = []
     current = head
@@ -97,6 +99,7 @@ def has_cycle_hash_set(head: Optional[ListNode]) -> bool:
 
 # Time:  O(n)
 # Space: O(n)
+
 
 # ---------------------------------------------------------------------------
 # Two pointer slow and fast
