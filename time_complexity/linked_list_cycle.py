@@ -57,7 +57,9 @@ FOLLOW-UPS TO CONSIDER
 - Can you compute the length of the cycle?
 """
 
-from typing import Optional, List
+import time
+import tracemalloc
+from typing import Optional, List, Callable, Tuple
 
 
 class ListNode:
@@ -67,17 +69,56 @@ class ListNode:
 
 
 # ---------------------------------------------------------------------------
-# YOUR SOLUTION
+# Brute force attempt
 # ---------------------------------------------------------------------------
-def has_cycle(head: Optional[ListNode]) -> bool:
-    """
-    Return True if the linked list starting at `head` contains a cycle.
+def has_cycle_brute_force(head: Optional[ListNode]) -> bool:
+    visited = []
+    current = head
+    while current is not None:
+        if current in visited:      # linear scan of the list each time
+            return True
+        visited.append(current)
+        current = current.next
+    return False
 
-    TODO: Implement.
-    Remember: compare nodes by identity, handle None/short lists safely,
-    and make sure the function always terminates.
-    """
-    raise NotImplementedError("Implement has_cycle")
+# Time:  O(n^2)  (each "in" check scans up to n items)
+# Space: O(n)
+
+
+def has_cycle_hash_set(head: Optional[ListNode]) -> bool:
+    seen = set()
+    current = head
+    while current is not None:
+        if current in seen:         # O(1) average lookup
+            return True
+        seen.add(current)
+        current = current.next
+    return False
+
+# Time:  O(n)
+# Space: O(n)
+
+# ---------------------------------------------------------------------------
+# Two pointer slow and fast
+# ---------------------------------------------------------------------------
+
+
+def has_cycle_slow_and_fast(head: Optional[ListNode]) -> bool:
+    slow = head
+    fast = head
+    while fast is not None and fast.next is not None:
+        slow = slow.next            # moves 1 step
+        fast = fast.next.next       # moves 2 steps
+        if slow is fast:            # they can only meet inside a cycle
+            return True
+    return False                    # fast reached the end, so no cycle
+
+# Time:  O(n)
+# Space: O(1)
+
+
+# Default implementation
+has_cycle = has_cycle_slow_and_fast
 
 
 # ---------------------------------------------------------------------------
@@ -120,20 +161,88 @@ TEST_CASES = [
 ]
 
 
-def run_tests() -> None:
+def run_variant_tests(
+    func: Callable[[Optional[ListNode]], bool],
+    variant_name: Optional[str] = None,
+) -> Tuple[int, int, float, int]:
+    """
+    Runs all test cases on a specific has_cycle variant independently,
+    measuring execution time and peak memory consumed by the function.
+    Returns (passed_count, total_count, total_time_seconds, peak_memory_bytes).
+    """
+    display_name = variant_name if variant_name else func.__name__
+    print(f"\n{'=' * 70}")
+    print(f"Running Tests for: {display_name} ({func.__name__})")
+    print(f"{'=' * 70}")
+
     passed = 0
+    total_time = 0.0
+    peak_mem = 0
+
     for desc, values, pos, expected in TEST_CASES:
         head = build_list(values, pos)
         try:
-            result = has_cycle(head)
+            tracemalloc.start()
+            tracemalloc.reset_peak()
+            start_time = time.perf_counter()
+            result = func(head)
+            end_time = time.perf_counter()
+            _, test_peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
         except NotImplementedError:
+            if tracemalloc.is_tracing():
+                tracemalloc.stop()
             print(f"[SKIP] {desc}: not implemented yet")
             continue
+        except Exception as e:
+            if tracemalloc.is_tracing():
+                tracemalloc.stop()
+            print(f"[ERROR] {desc}: {e}")
+            continue
+
+        elapsed = end_time - start_time
+        total_time += elapsed
+        peak_mem = max(peak_mem, test_peak)
+
         status = "PASS" if result == expected else "FAIL"
         if result == expected:
             passed += 1
         print(f"[{status}] {desc} | expected={expected} got={result}")
-    print(f"\n{passed}/{len(TEST_CASES)} tests passed")
+
+    print(f"\nResults: {passed}/{len(TEST_CASES)} tests passed for {display_name}")
+    print(f"--- Performance Stats for {func.__name__} ---")
+    print(f"  Total Execution Time : {total_time * 1000:.3f} ms ({total_time:.6f} s)")
+    print(f"  Peak Memory Consumed : {peak_mem} bytes ({peak_mem / 1024:.2f} KiB)")
+
+    return passed, len(TEST_CASES), total_time, peak_mem
+
+
+def run_tests() -> None:
+    """
+    Runs all test cases independently across all has_cycle variants,
+    displaying individual test results and performance statistics for each,
+    followed by a summary comparison.
+    """
+    variants = [
+        ("Brute Force (List/Array Lookup)", has_cycle_brute_force),
+        ("Hash Set (Seen Nodes)", has_cycle_hash_set),
+        ("Two Pointers (Slow & Fast / Floyd's Cycle Detection)", has_cycle_slow_and_fast),
+    ]
+
+    summary = []
+    for display_name, func in variants:
+        passed, total, elapsed, mem = run_variant_tests(func, display_name)
+        summary.append((func.__name__, passed, total, elapsed, mem))
+
+    print(f"\n{'=' * 70}")
+    print("Summary Comparison Across Variants:")
+    print(f"{'-' * 70}")
+    print(f"{'Variant':<26} {'Passed':<10} {'Time (ms)':<14} {'Peak Memory'}")
+    print(f"{'-' * 70}")
+    for name, passed, total, elapsed, mem in summary:
+        mem_str = f"{mem} B ({mem / 1024:.2f} KiB)"
+        print(f"{name:<26} {f'{passed}/{total}':<10} {elapsed * 1000:<14.3f} {mem_str}")
+    print(f"{'=' * 70}")
 
 
 if __name__ == "__main__":
