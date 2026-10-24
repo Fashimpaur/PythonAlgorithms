@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 python-algorithms = {file = ".", editable = true}
+matplotlib = "*"
 
 [dev-packages]
 pylint = "*"
