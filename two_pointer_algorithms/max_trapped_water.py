@@ -37,7 +37,6 @@ def max_trapped_water(heights: list[int]) -> int:
     # =========================================================================
     # - If len(heights) < 3, can any concave depression exist to trap water?
     # - What should be returned immediately for empty or small inputs?
-
     # =========================================================================
     # STEP 2: Algorithmic Guidelines (Two-Pointer Technique)
     # =========================================================================
@@ -47,7 +46,7 @@ def max_trapped_water(heights: list[int]) -> int:
     #
     # Core Invariant:
     # - Maintain 'left_max' (highest bar seen from 0 to left) and
-    #   'right_max' (highest bar seen from right to n - 1).
+    #   'right_max' (highest bar seen from right to n - 1
     # - At each step, compare 'left_max' and 'right_max':
     #     * If left_max <= right_max:
     #         - The water level at 'left' is strictly bounded by 'left_max' because
@@ -61,7 +60,6 @@ def max_trapped_water(heights: list[int]) -> int:
     #
     # Termination:
     # - Continue while left < right (or left <= right).
-
     # =========================================================================
     # STEP 3: Alternative Paradigms (For Conceptual Comparison)
     # =========================================================================
@@ -73,8 +71,28 @@ def max_trapped_water(heights: list[int]) -> int:
     #     pop the valley bottom and compute horizontal water layers bounded by the
     #     current bar and the previous stack top. (Time: O(n), Space: O(n))
 
-    # TODO: Implement your solution here
-    pass
+    if len(heights) < 3:
+        return 0
+
+    left, right = 0, len(heights) - 1
+    left_max, right_max = 0, 0
+    max_volume = 0
+
+    while left < right:
+        if heights[left] <= heights[right]:
+            if heights[left] >= left_max:
+                left_max = heights[left]
+            else:
+                max_volume += left_max - heights[left]
+            left += 1
+        else:
+            if heights[right] >= right_max:
+                right_max = heights[right]
+            else:
+                max_volume += right_max - heights[right]
+            right -= 1
+
+    return max_volume
 
 
 if __name__ == "__main__":
@@ -97,8 +115,10 @@ if __name__ == "__main__":
 
     for heights, expected, description in test_cases:
         result = max_trapped_water(heights)
+        status = "Pass" if result == expected else "Fail"
+        print(f"Test Case: {description} | Returned: {result} | Expected: {expected} | Status: {status}")
         assert result == expected, (
             f"Failed on [{description}] heights={heights}. Expected {expected}, got {result}"
         )
 
-    print("All test cases passed successfully!")
+    print("\nAll test cases passed successfully!")
