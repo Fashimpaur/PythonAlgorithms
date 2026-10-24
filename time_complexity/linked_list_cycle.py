@@ -71,7 +71,7 @@ class ListNode:
 # ---------------------------------------------------------------------------
 # Brute force attempt
 # ---------------------------------------------------------------------------
-# total trapped water, max trapped water
+
 
 def has_cycle_brute_force(head: Optional[ListNode]) -> bool:
     visited = []
