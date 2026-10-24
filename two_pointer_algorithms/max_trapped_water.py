@@ -111,6 +111,11 @@ if __name__ == "__main__":
         ([4, 1, 2, 1, 4], 8, "Stepped symmetrical bowl"),
         ([5, 1, 2, 1, 2], 2, "Asymmetrical boundaries constrained by shorter right wall"),
         ([2, 0, 0, 0, 2], 6, "Wide flat valley bottom"),
+        ([3, 1, 0, 2], 3, "Varying inner wall heights and zero between boundaries"),
+        ([1, 3, 1, 3, 2], 2, "Inner walls taller than outer boundaries forming enclosed sub-well"),
+        ([4, 2, 1, 3], 3, "Multiple decreasing inner wall heights bounded by outer walls"),
+        ([2, 1, 4, 1, 2], 2, "Central tall peak creating two distinct sub-wells"),
+        ([5, 2, 0, 1, 4], 9, "Multiple inner walls of varying heights including zero"),
     ]
 
     for heights, expected, description in test_cases:
