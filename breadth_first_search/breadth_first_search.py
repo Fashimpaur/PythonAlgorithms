@@ -114,6 +114,49 @@ def breadth_first_search(graph: dict[int, list[int]], start: int) -> list[int]:
     return result
 
 
+def bfs_distances(graph: dict[int, list[int]], start: int) -> dict[int, int]:
+    """
+    Return how many edges away from `start` each reachable node is.
+
+    The plain traversal above only gives a visit ORDER (a ranking by
+    closeness). This version also records the exact distance, which answers
+    questions like "how closely related is this person to me?"
+    (0 = you, 1 = direct friend, 2 = friend of a friend, and so on.)
+
+    Args:
+        graph: Adjacency list mapping each node to a list of its neighbors.
+        start: The node at which to begin the traversal.
+
+    Returns:
+        A dictionary mapping each reachable node to its distance from start.
+        Nodes that cannot be reached from `start` are not in the dictionary.
+    """
+    # Space: O(V). This dictionary does double duty: its keys are the visited
+    # set, and its values are the distances, so no separate set is needed.
+    distance: dict[int, int] = {start: 0}
+
+    # Space: O(V) for the queue, same reasoning as breadth_first_search.
+    queue: deque[int] = deque([start])
+
+    # Time: V iterations, one per reachable node.
+    while queue:
+        node = queue.popleft()
+
+        # Time: O(E) total across all nodes, same as the plain traversal.
+        # A node is first discovered through the shortest possible route
+        # (BFS finishes every level before starting the next), so its
+        # distance is simply its parent's distance + 1. That first value is
+        # final and never needs to be updated.
+        for neighbor in graph[node]:
+            if neighbor not in distance:
+                distance[neighbor] = distance[node] + 1
+                queue.append(neighbor)
+
+    # Overall Time:  O(V + E)  (identical to the plain traversal).
+    # Overall Space: O(V)      (distance dictionary + queue).
+    return distance
+
+
 # ---------------------------------------------------------------------------
 # Test cases: (graph, start, expected_output)
 # ---------------------------------------------------------------------------
@@ -186,8 +229,51 @@ def run_tests() -> None:
     print(f"\n{passed}/{len(TESTS)} tests passed")
 
 
+# Labels for the social network example (Test 8).
+RELATIONSHIP_LABELS = {
+    0: "you",
+    1: "direct friend",
+    2: "friend of a friend",
+    3: "friend of a friend of a friend",
+    4: "4th-degree connection",
+}
+
+
+def run_distance_demo() -> None:
+    """Use the Test 8 social network to show HOW CLOSE each person is to you."""
+    graph, start, visit_order = TESTS[7]  # Test 8; its visit order stays as-is
+    distance = bfs_distances(graph, start)
+
+    expected = {
+        1: 0,
+        10: 1, 20: 1, 30: 1,
+        11: 2, 21: 2, 31: 2, 32: 2,
+        12: 3, 40: 3,
+        13: 4,
+    }
+    status = "PASS" if distance == expected else "FAIL"
+    print(f"\nDistance check (Test 8 graph): {status}")
+    print(f"  got {distance}")
+
+    # The distances agree with the BFS visit order: walking the visit order,
+    # the distance never goes down.
+    in_order = [distance[node] for node in visit_order]
+    monotonic = in_order == sorted(in_order)
+    print(f"  visit order has non-decreasing distance: {monotonic}")
+
+    print("\nHow closely is each person related to you?")
+    for node in visit_order:
+        d = distance[node]
+        print(f"  person {node:>2}: degree {d} ({RELATIONSHIP_LABELS[d]})")
+
+    # Nodes missing from the dictionary are not connected to you at all.
+    unreachable = sorted(set(graph) - set(distance))
+    print(f"\nNot connected to you: {unreachable}")
+
+
 if __name__ == "__main__":
     run_tests()
+    run_distance_demo()
 
 
 # ===========================================================================
@@ -219,6 +305,14 @@ if __name__ == "__main__":
 #   - You need "degrees of separation" or other level-by-level answers.
 #   - The answer is likely close to the start, so there is no need to
 #     explore deep, irrelevant branches first.
+#
+# Getting the exact degree, not just the order
+#   The visit order only RANKS nodes by closeness; it does not say where one
+#   degree ends and the next begins. bfs_distances() records distance[child]
+#   = distance[parent] + 1 as each node is first discovered, giving the exact
+#   degree of every reachable node at no extra asymptotic cost: still
+#   O(V + E) time and O(V) space. A node missing from the result is not
+#   connected to the start at all.
 #
 # Common pitfalls
 #   - Marking nodes visited on dequeue instead of enqueue (duplicates in queue).
